@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Networks & RL Algorithms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab:hover {
+            color: #667eea;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 13px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .feature {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .hierarchy {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .hierarchy h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tree-node {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s, background 0.3s;
+            text-align: center;
+        }
+
+        .tree-node:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tree-connector {
+            font-size: 30px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .tree-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .branch-children {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .architecture {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .arch-diagram {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .arch-diagram h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.2em;
+        }
+        
+        .layer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .neuron {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s;
+            font-size: 11px;
+        }
+        
+        .neuron:hover {
+            transform: scale(1.1);
+        }
+        
+        .arrow {
+            text-align: center;
+            font-size: 24px;
+            color: #667eea;
+            margin: 5px 0;
+        }
+        
+        .gate-diagram {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 12px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .gate-diagram h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .gate-formula {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin: 8px 0;
+            text-align: center;
+        }
+        
+        .flowchart {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .flow-step {
+            background: white;
+            padding: 18px;
+            margin: 12px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .flow-step:hover {
+            transform: translateX(10px);
+        }
+        
+        .flow-step h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .model-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .model-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .model-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .model-card li {
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .model-card.pros li:before {
+            content: "✓";
+            position: absolute;
+            left: 10px;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .model-card.cons li:before {
+            content: "✗";
+            position: absolute;
+            left: 10px;
+            color: #ef4444;
+            font-weight: bold;
+        }
+        
+        .rnn-loop {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .time-steps {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .time-step {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .time-step-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .info-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-box p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .rl-hierarchy {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .agent-diagram {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .agent-box {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            text-align: center;
+        }
+
+        .agent-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .transformer-attention {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .architecture {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tree-level {
+                flex-direction: column;
+            }
+
+            .tabs {
+                font-size: 12px;
+            }
+
+            .tab {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Complete Neural Network & RL Guide</h1>
+        <p class="subtitle">From Basic Networks to Multi-Agent Reinforcement Learning</p>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('complete-hierarchy')">Complete Hierarchy</button>
+            <button class="tab" onclick="showTab('basic-nn')">Basic Networks</button>
+            <button class="tab" onclick="showTab('transformers')">Transformers</button>
+            <button class="tab" onclick="showTab('rl-algorithms')">RL Algorithms</button>
+            <button class="tab" onclick="showTab('marl')">Multi-Agent RL</button>
+            <button class="tab" onclick="showTab('comparison-all')">Full Comparison</button>
+        </div>
+        
+        <div id="complete-hierarchy" class="tab-content active">
+            <div class="hierarchy">
+                <h2>🔷 Complete Architecture Hierarchy</h2>
+                <div class="tree">
+                    <div class="tree-node" style="font-size: 18px;">Neural Network Architectures</div>
+                    <div class="tree-connector">↓</div>
+                    <div class="tree-level">
+                        <div class="tree-branch">
+                            <div class="tree-node">Feedforward</div>
+                            <div class="tree-connector">↓</div>
+                            <div class="tree-node" style="background: rgba(255,255,255,0.4);">MLP</div>
+                        </div>
+                        <div class="tree-branch">
+                            <div class="tree-node">Recurrent (RNN Family)</div>
+                            <div class="tree-connector">↓</div>
+                            <div class="branch-children">
+                                <div class="tree-node" style="background: rgba(255,255,255,0.4);">Vanilla RNN</div>
+                                <div class="tree-node" style="background: rgba(255,255,255,0.4);">LSTM</div>
+                                <div class="tree-node" style="background: rgba(255,255,255,0.4);">GRU</div>
+                            </div>
+                        </div>
+                        <div class="tree-branch">
+                            <div class="tree-node">Attention-Based</div>
+                            <div class="tree-connector">↓</div>
+                            <div class="tree-node" style="background: rgba(255,255,255,0.4);">Transformer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rl-hierarchy">
+                <h2>🎮 Reinforcement Learning Algorithm Hierarchy</h2>
+                <div class="tree">
+                    <div class="tree-node" style="font-size: 18px; background: rgba(255,255,255,0.3);">RL Algorithms</div>
+                    <div class="tree-connector">↓</div>
+                    <div class="tree-level">
+                        <div class="tree-branch">
+                            <div class="tree-node">Single-Agent RL</div>
+                            <div class="tree-connector">↓</div>
+                            <div class="branch-children">
+                                <div class="tree-node" style="background: rgba(255,255,255,0.4); font-size: 13px;">PPO<br/>(uses MLP/RNN)</div>
+                                <div class="tree-node" style="background: rgba(255,255,255,0.4); font-size: 13px;">DDPG<br/>(uses MLP)</div>
+                            </div>
+                        </div>
+                        <div class="tree-branch">
+                            <div class="tree-node">Multi-Agent RL (MARL)</div>
+                            <div class="tree-connector">↓</div>
+                            <div class="branch-children">
+                                <div class="tree-branch">
+                                    <div class="tree-node" style="font-size: 13px;">MAPPO<br/>(PPO for MARL)</div>
+                                    <div class="tree-connector">↓</div>
+                                    <div class="tree-node" style="background: rgba(255,255,255,0.5); font-size: 12px;">MLP-MAPPO</div>
+                                    <div class="tree-node" style="background: rgba(255,255,255,0.5); font-size: 12px;">Recurrent-MAPPO</div>
+                                </div>
+                                <div class="tree-branch">
+                                    <div class="tree-node" style="font-size: 13px;">MADDPG<br/>(DDPG for MARL)</div>
+                                    <div class="tree-connector">↓</div>
+                                    <div class="tree-node" style="background: rgba(255,255,255,0.5); font-size: 12px;">MLP-MADDPG</div>
+                                    <div class="tree-node" style="background: rgba(255,255,255,0.5); font-size: 12px;">Recurrent-MADDPG</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>🔑 Key Understanding</h3>
+                <p><strong>Neural Networks (MLP, RNN, Transformer):</strong> These are the building blocks - the actual network architectures that process data.</p>
+                <p><strong>RL Algorithms (PPO, DDPG, MAPPO, MADDPG):</strong> These are training algorithms that USE neural networks as their policy/value functions.</p>
+                <p><strong>Example:</strong> MAPPO is an algorithm that can use either MLP or RNN/LSTM/GRU as its underlying network architecture. So you have "MLP-MAPPO" or "Recurrent-MAPPO".</p>
+            </div>
+        </div>
+
+        <div id="basic-nn" class="tab-content">
+            <h2>Basic Neural Network Architectures</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>MLP</th>
+                        <th>Vanilla RNN</th>
+                        <th>LSTM</th>
+                        <th>GRU</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature">Type</td>
+                        <td>Feedforward</td>
+                        <td>Recurrent</td>
+                        <td>Recurrent</td>
+                        <td>Recurrent</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Memory</td>
+                        <td>None</td>
+                        <td>Short-term</td>
+                        <td>Long-term</td>
+                        <td>Long-term</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Gates</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>3</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Best For</td>
+                        <td>Static data</td>
+                        <td>Short sequences</td>
+                        <td>Long sequences</td>
+                        <td>Medium sequences</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="architecture">
+                <div class="arch-diagram">
+                    <h3>MLP</h3>
+                    <div class="layer">
+                        <div class="neuron">x₁</div>
+                        <div class="neuron">x₂</div>
+                        <div class="neuron">x₃</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="layer">
+                        <div class="neuron">h₁</div>
+                        <div class="neuron">h₂</div>
+                        <div class="neuron">h₃</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="layer">
+                        <div class="neuron">y</div>
+                    </div>
+                </div>
+
+                <div class="arch-diagram">
+                    <h3>RNN/LSTM/GRU</h3>
+                    <div class="time-steps">
+                        <div class="time-step">
+                            <div class="time-step-label">t-1</div>
+                            <div class="neuron">h</div>
+                            <div style="margin-top: 5px;">↑</div>
+                            <div class="neuron">x</div>
+                        </div>
+                        <div style="align-self: center;">→</div>
+                        <div class="time-step">
+                            <div class="time-step-label">t</div>
+                            <div class="neuron">h</div>
+                            <div style="margin-top: 5px;">↑</div>
+                            <div class="neuron">x</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="transformers" class="tab-content">
+            <div class="info-box">
+                <h3>🌟 Transformer Architecture (2017)</h3>
+                <p><strong>Revolution:</strong> Transformers replaced RNNs as the dominant architecture for sequence tasks through the attention mechanism.</p>
+                <p><strong>Key Idea:</strong> Instead of processing sequences step-by-step (like RNNs), transformers process all positions simultaneously using self-attention.</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>RNN/LSTM/GRU</th>
+                        <th>Transformer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature">Processing</td>
+                        <td>Sequential (step-by-step)</td>
+                        <td>Parallel (all at once)</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Memory Mechanism</td>
+                        <td>Hidden state</td>
+                        <td>Self-attention</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Long Dependencies</td>
+                        <td>Difficult (even with LSTM)</td>
+                        <td>Easy (direct attention)</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Training Speed</td>
+                        <td>Slow (sequential)</td>
+                        <td>Fast (parallelizable)</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Parameters</td>
+                        <td>Fewer</td>
+                        <td>Many more</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Data Requirements</td>
+                        <td>Works with less data</td>
+                        <td>Needs large datasets</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Examples</td>
+                        <td>Simple NLP tasks</td>
+                        <td>GPT, BERT, ChatGPT</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="flowchart">
+                <h3>Transformer Architecture</h3>
+                <div class="flow-step">
+                    <h4>Input Embedding</h4>
+                    <p>Convert tokens to vectors + positional encoding</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Self-Attention Mechanism</h4>
+                    <p>Each position attends to all other positions: Attention(Q, K, V) = softmax(QK^T/√d)V</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Multi-Head Attention</h4>
+                    <p>Run multiple attention mechanisms in parallel (typically 8-16 heads)</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Feed-Forward Network</h4>
+                    <p>Two-layer MLP applied to each position independently</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Layer Normalization & Residual Connections</h4>
+                    <p>Stabilize training and enable deep networks (often 12-96+ layers)</p>
+                </div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="model-card pros">
+                    <h3>Transformer Advantages</h3>
+                    <ul>
+                        <li>Fully parallelizable training</li>
+                        <li>Captures long-range dependencies easily</li>
+                        <li>State-of-the-art performance on most NLP tasks</li>
+                        <li>Scalable to massive datasets</li>
+                        <li>No vanishing gradient issues</li>
+                        <li>Foundation of modern LLMs</li>
+                    </ul>
+                </div>
+
+                <div class="model-card cons">
+                    <h3>Transformer Limitations</h3>
+                    <ul>
+                        <li>Requires massive amounts of data</li>
+                        <li>Computationally expensive (O(n²) complexity)</li>
+                        <li>High memory usage</li>
+                        <li>Needs large compute resources</li>
+                        <li>Less suitable for streaming/online learning</li>
+                        <li>Quadratic cost with sequence length</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="rl-algorithms" class="tab-content">
+            <div class="info-box">
+                <h3>🎯 What are RL Algorithms?</h3>
+                <p>Reinforcement Learning algorithms are <strong>training methods</strong> that teach agents to make decisions. They USE neural networks (MLP, RNN, etc.) as function approximators for policies and value functions.</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Type</th>
+                        <th>Network Used</th>
+                        <th>Key Idea</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature">PPO</td>
+                        <td>Policy Gradient</td>
+                        <td>MLP or RNN</td>
+                        <td>Clip objective to prevent large policy updates</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">DDPG</td>
+                        <td>Actor-Critic</td>
+                        <td>MLP (typically)</td>
+                        <td>Continuous action spaces with deterministic policy</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">MAPPO</td>
+                        <td>Multi-Agent PPO</td>
+                        <td>MLP or RNN</td>
+                        <td>PPO extended to multiple agents with centralized training</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">MADDPG</td>
+                        <td>Multi-Agent DDPG</td>
+                        <td>MLP (typically)</td>
+                        <td>DDPG for multiple agents with centralized critic</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="flowchart">
+                <h3>PPO (Proximal Policy Optimization)</h3>
+                <div class="flow-step">
+                    <h4>1. Collect Trajectories</h4>
+                    <p>Agent interacts with environment using current policy π_θ</p>
+                </div>
+                <div class="flow-step">
+                    <h4>2. Compute Advantages</h4>
+                    <p>A(s,a) = Q(s,a) - V(s) - how much better an action is than average</p>
+                </div>
+                <div class="flow-step">
+                    <h4>3. Optimize Policy with Clipping</h4>
+                    <p>L = min(r(θ)·A, clip(r(θ), 1-ε, 1+ε)·A) where r(θ) = π_θ(a|s)/π_old(a|s)</p>
+                </div>
+                <div class="flow-step">
+                    <h4>4. Update Value Function</h4>
+                    <p>Train critic network to predict V(s) using MSE loss</p>
+                </div>
+            </div>
+
+            <div class="flowchart">
+                <h3>DDPG (Deep Deterministic Policy Gradient)</h3>
+                <div class="flow-step">
+                    <h4>1. Actor Network</h4>
+                    <p>Deterministic policy μ(s) that outputs continuous actions</p>
+                </div>
+                <div class="flow-step">
+                    <h4>2. Critic Network</h4>
+                    <p>Q-function Q(s,a) estimates value of state-action pairs</p>
+                </div>
+                <div class="flow-step">
+                    <h4>3. Experience Replay</h4>
+                    <p>Store transitions in buffer and sample randomly for training</p>
+                </div>
+                <div class="flow-step">
+                    <h4>4. Target Networks</h4>
+                    <p>Use slowly-updated target networks for stable learning</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="marl" class="tab-content">
+            <div class="rl-hierarchy">
+                <h2>🤝 Multi-Agent Reinforcement Learning (MARL)</h2>
+                <p style="text-align: center; margin-top: 15px; font-size: 15px;">Multiple agents learning simultaneously in shared environment</p>
+            </div>
+
+            <div class="info-box">
+                <h3>🔍 Understanding MAPPO & MADDPG</h3>
+                <p><strong>These are NOT neural networks!</strong> They are RL training algorithms that extend single-agent methods (PPO and DDPG) to multi-agent scenarios.</p>
+                <p><strong>Key Concept:</strong> Each algorithm can use EITHER MLP or Recurrent (LSTM/GRU) networks as their underlying architecture.</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Based On</th>
+                        <th>Network Options</th>
+                        <th>Training</th>
+                        <th>Execution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature">MAPPO</td>
+                        <td>PPO</td>
+                        <td>MLP or RNN/LSTM/GRU</td>
+                        <td>Centralized</td>
+                        <td>Decentralized</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Recurrent-MAPPO</td>
+                        <td>PPO</td>
+                        <td>LSTM/GRU (with hidden states)</td>
+                        <td>Centralized</td>
+                        <td>Decentralized</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">MADDPG</td>
+                        <td>DDPG</td>
+                        <td>MLP (typically)</td>
+                        <td>Centralized Critic</td>
+                        <td>Decentralized Actor</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Recurrent-MADDPG</td>
+                        <td>DDPG</td>
+                        <td>LSTM/GRU (for partial obs)</td>
+                        <td>Centralized Critic</td>
+                        <td>Decentralized Actor</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="flowchart">
+                <h3>MAPPO (Multi-Agent PPO)</h3>
+                <div class="flow-step">
+                    <h4>Architecture Choice</h4>
+                    <p><strong>MLP-MAPPO:</strong> Each agent has MLP policy network (for fully observable states)</p>
+                    <p><strong>Recurrent-MAPPO:</strong> Each agent has LSTM/GRU policy network (for partial observability or history dependence)</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Centralized Training</h4>
+                    <p>Centralized value function V(s) sees global state during training</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Decentralized Execution</h4>
+                    <p>Each agent's policy π_i(a_i|o_i) uses only local observations at test time</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Shared or Independent Networks</h4>
+                    <p>Can share parameters across agents (homogeneous) or use separate networks (heterogeneous)</p>
+                </div>
+            </div>
+
+            <div class="flowchart">
+                <h3>MADDPG (Multi-Agent DDPG)</h3>
+                <div class="flow-step">
+                    <h4>Architecture Choice</h4>
+                    <p><strong>MLP-MADDPG:</strong> Actor and critic use MLP networks (standard)</p>
+                    <p><strong>Recurrent-MADDPG:</strong> Actor uses LSTM/GRU for partial observability (less common)</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Centralized Critic</h4>
+                    <p>Q_i(s, a_1,...,a_N) - critic sees all agents' states and actions</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Decentralized Actor</h4>
+                    <p>μ_i(o_i) - each actor only uses its own observation</p>
+                </div>
+                <div class="flow-step">
+                    <h4>Continuous Actions</h4>
+                    <p>Best for environments with continuous action spaces (robotics, control)</p>
+                </div>
+            </div>
+
+            <div class="agent-diagram">
+                <div class="agent-box">
+                    <h4>Agent 1</h4>
+                    <p style="font-size: 13px; margin-top: 10px;">Policy: MLP or RNN</p>
+                    <p style="font-size: 13px;">Observation: o₁</p>
+                </div>
+                <div class="agent-box">
+                    <h4>Agent 2</h4>
+                    <p style="font-size: 13px; margin-top: 10px;">Policy: MLP or RNN</p>
+                    <p style="font-size: 13px;">Observation: o₂</p>
+                </div>
+                <div class="agent-box">
+                    <h4>Agent N</h4>
+                    <p style="font-size: 13px; margin-top: 10px;">Policy: MLP or RNN</p>
+                    <p style="font-size: 13px;">Observation: oₙ</p>
+                </div>
+            </div>
+
+            <div style="background: #fff3cd; padding: 25px; border-radius: 15px; margin-top: 30px;">
+                <h3 style="color: #92400e; margin-bottom: 15px;">🔑 When to Use Recurrent Networks in MARL?</h3>
+                <div style="color: #78350f;">
+                    <p style="margin-bottom: 10px;"><strong>Use MLP-based (MAPPO/MADDPG) when:</strong></p>
+                    <ul style="margin-left: 25px; margin-bottom: 15px;">
+                        <li>Environment is fully observable</li>
+                        <li>No temporal dependencies needed</li>
+                        <li>Faster training is priority</li>
+                        <li>Simpler, easier to debug</li>
+                    </ul>
+                    <p style="margin-bottom: 10px;"><strong>Use Recurrent (LSTM/GRU) when:</strong></p>
+                    <ul style="margin-left: 25px;">
+                        <li>Partial observability (agents can't see everything)</li>
+                        <li>Need to remember past observations</li>
+                        <li>Temporal patterns are important</li>
+                        <li>Communication history matters</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="comparison-all" class="tab-content">
+            <h2>Complete Comparison: All Architectures & Algorithms</h2>
+            
+            <table style="font-size: 12px;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Memory</th>
+                        <th>Parallelizable</th>
+                        <th>Best Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #e0f2fe;">
+                        <td class="feature">MLP</td>
+                        <td>Neural Network (Feedforward)</td>
+                        <td>None</td>
+                        <td>✓ Yes</td>
+                        <td>Static data, classification</td>
+                    </tr>
+                    <tr style="background: #e0f2fe;">
+                        <td class="feature">Vanilla RNN</td>
+                        <td>Neural Network (Recurrent)</td>
+                        <td>Short-term</td>
+                        <td>✗ No</td>
+                        <td>Short sequences (rarely used)</td>
+                    </tr>
+                    <tr style="background: #e0f2fe;">
+                        <td class="feature">LSTM</td>
+                        <td>Neural Network (Recurrent)</td>
+                        <td>Long-term</td>
+                        <td>✗ No</td>
+                        <td>Long sequences, complex patterns</td>
+                    </tr>
+                    <tr style="background: #e0f2fe;">
+                        <td class="feature">GRU</td>
+                        <td>Neural Network (Recurrent)</td>
+                        <td>Long-term</td>
+                        <td>✗ No</td>
+                        <td>Medium sequences, efficiency</td>
+                    </tr>
+                    <tr style="background: #e0f2fe;">
+                        <td class="feature">Transformer</td>
+                        <td>Neural Network (Attention)</td>
+                        <td>Attention-based</td>
+                        <td>✓ Yes</td>
+                        <td>Large-scale NLP, language models</td>
+                    </tr>
+                    <tr style="background: #fef3c7;">
+                        <td class="feature">PPO</td>
+                        <td>Single-Agent RL Algorithm</td>
+                        <td>Depends on network</td>
+                        <td>✓ Parallel collection</td>
+                        <td>General RL, robotics</td>
+                    </tr>
+                    <tr style="background: #fef3c7;">
+                        <td class="feature">DDPG</td>
+                        <td>Single-Agent RL Algorithm</td>
+                        <td>Depends on network</td>
+                        <td>✓ Parallel collection</td>
+                        <td>Continuous control, robotics</td>
+                    </tr>
+                    <tr style="background: #d1fae5;">
+                        <td class="feature">MAPPO</td>
+                        <td>Multi-Agent RL Algorithm</td>
+                        <td>Depends on network</td>
+                        <td>✓ Parallel agents</td>
+                        <td>Cooperative multi-agent tasks</td>
+                    </tr>
+                    <tr style="background: #d1fae5;">
+                        <td class="feature">Recurrent-MAPPO</td>
+                        <td>Multi-Agent RL Algorithm</td>
+                        <td>Long-term (LSTM/GRU)</td>
+                        <td>✓ Parallel agents</td>
+                        <td>Partial observability, history-dependent</td>
+                    </tr>
+                    <tr style="background: #d1fae5;">
+                        <td class="feature">MADDPG</td>
+                        <td>Multi-Agent RL Algorithm</td>
+                        <td>Depends on network</td>
+                        <td>✓ Parallel agents</td>
+                        <td>Multi-agent continuous control</td>
+                    </tr>
+                    <tr style="background: #d1fae5;">
+                        <td class="feature">Recurrent-MADDPG</td>
+                        <td>Multi-Agent RL Algorithm</td>
+                        <td>Long-term (LSTM/GRU)</td>
+                        <td>✓ Parallel agents</td>
+                        <td>Partial obs multi-agent control</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h3>📊 Understanding the Layers</h3>
+                <p><strong>Layer 1 - Neural Networks (MLP, RNN, LSTM, GRU, Transformer):</strong> These are the fundamental building blocks. They are network architectures that process and transform data.</p>
+                <p><strong>Layer 2 - RL Algorithms (PPO, DDPG):</strong> These are training methods that USE neural networks as function approximators. PPO might use an MLP or LSTM to represent its policy.</p>
+                <p><strong>Layer 3 - Multi-Agent Extensions (MAPPO, MADDPG):</strong> These extend single-agent RL algorithms to multiple agents. They also USE neural networks (MLP or recurrent).</p>
+                <p><strong>Key Point:</strong> An algorithm like "Recurrent-MAPPO" means: Multi-Agent PPO algorithm using LSTM/GRU networks instead of MLPs.</p>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="model-card">
+                    <h3 style="color: #3b82f6;">Neural Networks</h3>
+                    <p style="padding: 15px; background: white; border-radius: 8px; font-size: 13px;">
+                        <strong>What they are:</strong> Data processing architectures<br/>
+                        <strong>What they do:</strong> Transform inputs to outputs<br/>
+                        <strong>Examples:</strong> MLP, LSTM, Transformer
+                    </p>
+                </div>
+
+                <div class="model-card">
+                    <h3 style="color: #8b5cf6;">RL Algorithms</h3>
+                    <p style="padding: 15px; background: white; border-radius: 8px; font-size: 13px;">
+                        <strong>What they are:</strong> Training procedures<br/>
+                        <strong>What they do:</strong> Teach agents to make decisions<br/>
+                        <strong>Examples:</strong> PPO, DDPG, MAPPO, MADDPG
+                    </p>
+                </div>
+
+                <div class="model-card">
+                    <h3 style="color: #10b981;">The Combination</h3>
+                    <p style="padding: 15px; background: white; border-radius: 8px; font-size: 13px;">
+                        <strong>Reality:</strong> RL algorithms USE neural networks<br/>
+                        <strong>Example:</strong> "Recurrent-MAPPO" = MAPPO algorithm + LSTM network<br/>
+                        <strong>Choice:</strong> Pick algorithm AND network architecture
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 15px; margin-top: 30px;">
+                <h3 style="margin-bottom: 20px;">🎓 Complete Decision Tree</h3>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 10px 0;">
+                    <strong>Step 1: Choose Problem Type</strong>
+                    <p style="margin-top: 10px; font-size: 14px;">Supervised Learning? → Use Neural Networks (MLP, RNN, Transformer)</p>
+                    <p style="font-size: 14px;">Reinforcement Learning? → Continue to Step 2</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 10px 0;">
+                    <strong>Step 2: Single or Multi-Agent?</strong>
+                    <p style="margin-top: 10px; font-size: 14px;">Single Agent → PPO or DDPG</p>
+                    <p style="font-size: 14px;">Multiple Agents → MAPPO or MADDPG</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 10px 0;">
+                    <strong>Step 3: Choose Network Architecture</strong>
+                    <p style="margin-top: 10px; font-size: 14px;">Fully observable, no history needed? → MLP</p>
+                    <p style="font-size: 14px;">Partial observability or temporal patterns? → LSTM/GRU (Recurrent)</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 10px 0;">
+                    <strong>Final Result</strong>
+                    <p style="margin-top: 10px; font-size: 14px;">Examples: MLP-PPO, Recurrent-MAPPO, MLP-MADDPG, etc.</p>
+                </div>
+            </div>
+
+            <div style="background: #e0e7ff; padding: 25px; border-radius: 15px; margin-top: 30px;">
+                <h3 style="color: #3730a3; margin-bottom: 15px;">💡 Real-World Example</h3>
+                <div style="color: #312e81; line-height: 1.8;">
+                    <p><strong>Scenario:</strong> Training multiple robots to cooperate in a warehouse</p>
+                    <p style="margin-top: 10px;"><strong>Choice 1 - Algorithm:</strong> MAPPO (multi-agent cooperation)</p>
+                    <p><strong>Choice 2 - Network:</strong> If robots have full visibility → MLP-MAPPO</p>
+                    <p style="margin-left: 40px;">If robots have limited sensors → Recurrent-MAPPO (LSTM)</p>
+                    <p style="margin-top: 10px;"><strong>Result:</strong> "We're using Recurrent-MAPPO" means multi-agent PPO with LSTM networks for handling partial observability.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
