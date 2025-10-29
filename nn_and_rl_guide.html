@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8fafc;
             padding: 20px;
             min-height: 100vh;
         }
@@ -26,13 +26,50 @@
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
+
+        .page-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            margin: -40px -40px 30px -40px;
+        }
+
+        .page-header h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .page-header .author {
+            text-align: center;
+            font-size: 1.1em;
+            color: #06b6d4;
+            margin-bottom: 5px;
+        }
+
+        .page-header .back-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .page-header .back-link a {
+            color: #06b6d4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .page-header .back-link a:hover {
+            color: #ffffff;
+        }
         
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
             font-size: 2.5em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -430,6 +467,33 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
+        .footer {
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-radius: 0 0 20px 20px;
+            margin-left: -40px;
+            margin-right: -40px;
+            margin-bottom: -40px;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        .footer a {
+            color: #06b6d4;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            color: #ffffff;
+        }
+
         @media (max-width: 768px) {
             .architecture {
                 grid-template-columns: 1fr;
@@ -460,8 +524,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>🧠 Complete Neural Network & RL Guide</h1>
-        <p class="subtitle">From Basic Networks to Multi-Agent Reinforcement Learning</p>
+        <div class="page-header">
+            <div class="author">Created by Sooraj Skanda</div>
+            <h1>🧠 Complete Neural Network & RL Guide</h1>
+            <p style="text-align: center; margin-top: 10px; font-size: 1.1em;">From Basic Networks to Multi-Agent Reinforcement Learning</p>
+            <div class="back-link">
+                <a href="index.html">← Back to Portfolio</a>
+            </div>
+        </div>
         
         <div class="tabs">
             <button class="tab active" onclick="showTab('complete-hierarchy')">Complete Hierarchy</button>
@@ -1121,6 +1191,14 @@
                 </div>
             </div>
         </div>
+
+        <footer class="footer">
+            <p>&copy; 2025 Sooraj Skanda Segu Narendra. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">Generated with the help of <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude AI</a></p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">
+                Doctoral Student | <a href="https://www.kth.se/" target="_blank" rel="noopener noreferrer">KTH Royal Institute of Technology</a>
+            </p>
+        </footer>
     </div>
     
     <script>
